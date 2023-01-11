@@ -1,0 +1,10 @@
+.person-detail{
+    transition: transform .5s;
+}
+
+.person-detail:hover {
+    transform: scale(1.01);
+    background-color: white;
+    box-shadow: 1px 1px 8px #8e8686ca;
+    border-radius: 25px;
+}

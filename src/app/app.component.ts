@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'firstApplication';
+  showForm(flag:boolean){
+    return flag;
+  }
 }

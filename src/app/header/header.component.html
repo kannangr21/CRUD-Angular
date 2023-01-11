@@ -1,0 +1,65 @@
+<nav class="navbar navbar-light bg-light">
+    <h2 class=" mx-auto text-center">Person Details</h2>
+    <button class="btn d-flex btn-sm btn-outline-primary" (click)="open(demoModal)">Add person</button>
+</nav>
+<ng-template #demoModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add a person</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #personForm="ngForm">
+            <div class="form-group">
+                <label for="FirstName">First Name</label>
+                <input ngModel required name="FirstName" #firstName="ngModel" class="form-control"
+                    placeholder="First Name Here" type="text">
+                <span *ngIf="firstName.invalid && firstName.touched" class="validator">Please enter the field value
+                    <br></span>
+
+                <label for="LastName">Last Name</label>
+                <input ngModel required name="LastName" #lastName="ngModel" class="form-control"
+                    placeholder="Last Name Here" type="text">
+                <span *ngIf="lastName.invalid && lastName.touched" class="validator">Please enter the field value
+                    <br></span>
+
+                <label for="AddrL1">Address Line 1</label>
+                <input ngModel required name="AddressLine1" #addrL1="ngModel" class="form-control"
+                    placeholder="Address Line 1 Here" type="text">
+                <span *ngIf="addrL1.invalid && addrL1.touched" class="validator">Please enter the field value
+                    <br></span>
+
+                <label for="AddrL2">Address Line 2</label>
+                <input ngModel required name="AddressLine2" #addrL2="ngModel" class="form-control"
+                    placeholder="Address Line 2 Here" type="text">
+                <span *ngIf="addrL2.invalid && addrL2.touched" class="validator">Please enter the field value
+                    <br></span>
+
+                <label for="City">City</label>
+                <input ngModel required name="City" #city="ngModel" class="form-control" placeholder="City Here"
+                    type="text">
+                <span *ngIf="city.invalid && city.touched" class="validator">Please enter the field value <br></span>
+
+                <label for="State">State</label>
+                <input ngModel required name="State" #state="ngModel" class="form-control" placeholder="State Here"
+                    type="text">
+                <span *ngIf="state.invalid && state.touched" class="validator">Please enter the field value <br></span>
+
+                <label for="Pincode">Pincode</label>
+                <input ngModel pattern="[0-9]{6}" required name="Pincode" #pincode="ngModel" class="form-control"
+                    placeholder="Pincode Here" type="text">
+                <span *ngIf="pincode.invalid && pincode.touched" class="validator">Please enter the field value
+                    <br></span>
+
+                <label for="Phone">Phone Number</label>
+                <input ngModel pattern="[0-9]{10}" required name="PhoneNumber" #phone="ngModel" class="form-control"
+                    placeholder="Phone Number Here" type="text">
+                <span *ngIf="phone.invalid && phone.touched" class="validator">Please enter the field value <br></span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" [disabled]="personForm.invalid" class="btn btn-outline-dark"
+            (click)="submitPersonDetails(personForm.value); modal.close('Save click'); ">Save</button>
+    </div>
+</ng-template>
