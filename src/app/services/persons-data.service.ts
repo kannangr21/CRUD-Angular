@@ -8,28 +8,32 @@ import { HttpClient } from '@angular/common/http'
 export class PersonsDataService {
   baseUrl = "http://localhost:8000/";
   constructor(private http:HttpClient){}//, private table: PersonTableComponent) { }
-  persons(){
-    return this.http.get(this.baseUrl + 'person')
+  persons(page: number){
+    return this.http.get(this.baseUrl + 'person?page=' + page.toString());
   }
 
   addPerson(data:any){
     return this.http.post(this.baseUrl + 'person', data);  
   }
 
-  searchPerson(data:string){
+  searchPerson(data:string, page:number){
     data = data.replace(' ', '%20');
-    return this.http.get(this.baseUrl + 'person/search?searchVal=' + data + '&pageNo=1' )
+    return this.http.get(this.baseUrl + 'person/search?searchVal=' + data + '&pageNo=' + page.toString() )
   }
 
   deletePerson(personId:number){
     return this.http.delete(this.baseUrl + 'person/' + personId);
   }
 
-  wildCardSearch(data:string){
+  wildCardSearch(data:string, page:number){
     data = data.replace(' ', '%20');
-    return this.http.get(this.baseUrl + 'person/wildcard?searchVal=' + data);
+    return this.http.get(this.baseUrl + 'person/wildcard?searchVal=' + data + '&pageNo=' + page.toString());
   }
 
-
+  sortPerson(field: string, page: number, sortOrder:string){
+    if(sortOrder === 'desc')
+      return this.http.get(this.baseUrl + 'person/sort/' + field + '/' + page.toString() + '/desc');
+    return this.http.get(this.baseUrl + 'person/sort/' + field + '/' + page.toString());
+  }
 
 }

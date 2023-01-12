@@ -1,22 +1,86 @@
-<div *ngIf="persons.records.length < 0">
+<div class="row">
+    <form #searchForm="ngForm" class="d-flex col-lg-3">
+        <input #wildSearch="ngModel" required ngModel class="form-control" name="search" type="search" placeholder="Search"
+            aria-label="Search">
+            <button *ngIf="wildSearch.valid && canApply()" matTooltip="Search records" class="mx-2 btn btn-outline-success" (click)="callWildCard(searchForm.value)"
+                type="submit"><mat-icon>search</mat-icon></button>
+            <!-- <button class="mx-2 btn btn-outline-dark" (click)="refreshPage(searchForm);" type="submit">Clear
+            </button> -->
+        
+    </form>
+    <form #exactForm="ngForm" class="d-flex col-lg-4 col-md-8 col-sm-8 col-8">
+        <div class="d-flex px-1">
+            <input ngModel #esFirstName class="form-control me-2" name="fnsearch" type="search" placeholder="First Name"
+                aria-label="Search">
+            <input ngModel #esLastName class="form-control me-2" name="lnsearch" type="search" placeholder="Last Name"
+                aria-label="Search">
+            <input ngModel #esCity class="form-control me-2" name="citysearch" type="search" placeholder="City"
+                aria-label="Search">
+        </div>
+        <button *ngIf="canApply()" matTooltip="Filter Record" class="btn btn-outline-primary" (click)="callExactSearch(exactForm.value)"
+                type="submit"><mat-icon>filter_list</mat-icon></button>
+        <!-- <div class="d-flex m-2 justify-content-center">
+            <button class="btn btn-outline-primary" (click)="searchPersonDetails(exactForm.value)"
+                type="submit">Filter</button>
+            <button class="btn btn-outline-dark mx-1" (click)="refreshPage(exactForm);" type="submit">Clear</button>
+        </div> -->
+    </form>
+    <form #sortForm="ngForm" class="d-flex col-lg-4 col-md-8 col-sm-8 col-8">
+        <div class="d-flex px-1">
+            <select class="form-select" #fieldName="ngModel" ngModel name="fieldName" required id="">
+                <option value="" disabled selected>Sort field</option>
+                <option *ngFor="let field of personModel | keyvalue">{{ field.key }}</option>
+            </select>
+            <select class="form-select mx-1" #sortOrder="ngModel" ngModel name="sortOrder" required aria-placeholder="Sort order" id="">
+                <option value=""   disabled selected>Sort order</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+        </div>
+        <button *ngIf="canApply()" matTooltip="Sort Records"
+         class="btn btn-outline-secondary" (click)="sort(sortForm.value)" type="submit"><mat-icon [ngStyle]="{'color':'#93952c'}">sort</mat-icon></button>
+        <!-- <div class="d-flex m-2 justify-content-center">
+            <button class="btn btn-outline-primary" (click)="sort(sortForm.value)" type="submit">Filter</button>
+            <button class="btn btn-outline-dark mx-1" (click)="refreshPage(sortForm);" type="submit">Clear</button>
+        </div> -->
+    </form>
+    <div class="d-flex col-lg-1 col-md-8 col-sm-8 col-8">
+    <button matTooltip="Clear Filters" class="btn btn-outline-danger" (click)="refreshPage([searchForm, exactForm, sortForm])" type="submit"><mat-icon>clear</mat-icon></button>
+</div>
+<span class="validator text-center" *ngIf="!canApply()">Clear existing filter to apply other filters</span>
+</div>
+
+<br>
+<div *ngIf="persons.records.length == 0">
     <h2 class=" text-center">No records to display 🤥</h2>
 </div>
-<table *ngIf="persons.records.length > 0" class="table align-middle bg-white">
+<table *ngIf="persons.records.length > 0" class="pt-2 table align-middle bg-white">
     <thead class="bg-light">
         <tr>
             <th>#</th>
+            <!-- <th>First Name<button(sort)="sortPersons('FirstName')" > <select name="sort" id="">
+                <option value="">Ascending</option>
+                <option value="">Descending</option>
+            </select> </button></th> -->
             <th>First Name</th>
             <th>Last Name</th>
             <th>Address 1</th>
             <th>Address 2</th>
             <th>City</th>
-            <th>State</th>
+            <th> State</th>
             <th>Pincode</th>
             <th>Phone Number</th>
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody *ngFor="let person of persons.records">
+    
+    <tbody *ngFor="let person of persons.records | paginate
+    : {
+        itemsPerPage: tableSize,
+        currentPage: persons.metaData.currentPage,
+        totalItems: persons.metaData.totalRecords
+      };
+let i = index">
         <tr class="person-detail">
             <td>{{ person.PersonID }}</td>
             <td>
@@ -51,123 +115,44 @@
             <td>{{ person.PhoneNumber }}</td>
             <td>
                 <button type="button" class="btn btn-link btn-sm btn-rounded">
-                    Edit
+                    <mat-icon [ngStyle]="{'color':'gray'}">edit</mat-icon>
                 </button>
-                <button type="button" (click)="openPopup()"
+                <button type="button" (click)="open(confirm, person.PhoneNumber);"
                     class="btn btn-link btn-sm btn-rounded">
-                    Delete
+                    <mat-icon [ngStyle]="{'color':'red'}">delete</mat-icon>
                 </button>
-                
             </td>
         </tr>
-        <div class="modal bg-light" style="--bs-bg-opacity: .5;" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Confirmation</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure want to delete the record?</p>
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-dark" (click)="closePopup()">
-                            Cancel
-                        </button>
-                        <button type="button" class="btn btn-outline-danger" (click)="deletePerson(person.PhoneNumber); closePopup()">
-                            Delete
-                        </button>
-                    </div>
-                </div>
+    </tbody>
+
+</table>
+<div class="d-flex justify-content-center">
+    <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+    </pagination-controls>
+</div>
+
+
+<ng-template #confirm let-c="close" let-d="dismiss">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure want to delete the record?</p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" (click)="d('Cross Click')">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-outline-danger" (click)="c('yes')">
+                    Delete
+                </button>
             </div>
         </div>
-    </tbody>
-    
-</table>
-
-<form #searchForm="ngForm" class="d-flex mx-auto col-lg-4 col-md-8 col-sm-8 col-8 py-4">
-    <input ngModel class="form-control me-2" name="search" type="search" placeholder="Enter name / city exactly"
-        aria-label="Search">
-    <button class="btn btn-outline-primary" (click)="searchPersonDetails(searchForm.value)"
-        type="submit">Search</button>
-    <button class="btn btn-outline-dark mx-1" (click)="refreshPage()" type="submit">Clear</button>
-</form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <app-header></app-header>
-
-<nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-        <form #searchForm="ngForm" class="d-flex">
-            <input ngModel class="form-control me-2" name="search" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" (click)="searchWildCard(searchForm.value)" type="submit">Search</button>
-        </form>
-
-        <h2 class="d-flex">Person Details</h2>
-
-        <button class="btn d-flex btn-sm btn-outline-primary" (click)="open(demoModal)">Add person</button>
-
     </div>
-</nav> -->
-<!-- <button class="btn d-flex btn-sm btn-outline-primary" (click)="open(demoModal)">Add person</button> -->
 
-<!-- <ng-template #demoModal let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Add a person</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-            (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-        <form #personForm="ngForm" (ngSubmit)="submitPersonDetails(personForm.value)">
-            <div class="form-group">
-                <label for="FirstName">First Name</label>
-                <input ngModel required name="FirstName"  #firstName="ngModel" class="form-control" placeholder="First Name Here" type="text">
-                <span *ngIf="firstName.invalid && firstName.touched" class="validator">Please enter the field value <br></span> 
-                
-                <label for="LastName">Last Name</label>
-                <input ngModel required name="LastName" #lastName="ngModel" class="form-control" placeholder="Last Name Here" type="text">
-                <span *ngIf="lastName.invalid && lastName.touched" class="validator">Please enter the field value <br></span> 
-
-                <label for="AddrL1">Address Line 1</label>
-                <input ngModel required name="AddressLine1" #addrL1="ngModel" class="form-control" placeholder="Address Line 1 Here" type="text">
-                <span *ngIf="addrL1.invalid && addrL1.touched" class="validator">Please enter the field value <br></span> 
-
-                <label for="AddrL2">Address Line 2</label>
-                <input ngModel required name="AddressLine2" #addrL2="ngModel" class="form-control" placeholder="Address Line 2 Here" type="text">
-                <span *ngIf="addrL2.invalid && addrL2.touched" class="validator">Please enter the field value <br></span> 
-
-                <label for="City">City</label>
-                <input ngModel required name="City" #city="ngModel" class="form-control" placeholder="City Here" type="text">
-                <span *ngIf="city.invalid && city.touched" class="validator">Please enter the field value <br></span> 
-
-                <label for="State">State</label>
-                <input ngModel required name="State" #state="ngModel" class="form-control" placeholder="State Here" type="text">
-                <span *ngIf="state.invalid && state.touched" class="validator">Please enter the field value <br></span> 
-
-                <label for="Pincode">Pincode</label>
-                <input ngModel pattern="[0-9]{6}" required name="Pincode" #pincode="ngModel" class="form-control" placeholder="Pincode Here" type="text">
-                <span *ngIf="pincode.invalid && pincode.touched" class="validator">Please enter the field value <br></span> 
-
-                <label for="Phone">Phone Number</label>
-                <input ngModel pattern="[0-9]{10}" required name="PhoneNumber" #phone="ngModel" class="form-control" placeholder="Phone Number Here" type="text">
-                <span *ngIf="phone.invalid && phone.touched" class="validator">Please enter the field value <br></span> 
-            </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="submitPersonDetails(personForm.value); modal.close('Save click'); ">Save</button>
-    </div>
-</ng-template> -->
-
-
+</ng-template>
