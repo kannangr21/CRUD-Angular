@@ -8,18 +8,21 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { PersonTableComponent } from './person-table/person-table.component';
+import { InputFormComponent } from './input-form/input-form.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    PersonTableComponent
+    PersonTableComponent,
+    InputFormComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +34,8 @@ import { PersonTableComponent } from './person-table/person-table.component';
     ReactiveFormsModule,
     NgxPaginationModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

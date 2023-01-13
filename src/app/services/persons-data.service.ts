@@ -25,6 +25,10 @@ export class PersonsDataService {
     return this.http.delete(this.baseUrl + 'person/' + personId);
   }
 
+  editPerson(persondetails:any){
+    return this.http.patch(this.baseUrl + 'person', persondetails);
+  }
+
   wildCardSearch(data:string, page:number){
     data = data.replace(' ', '%20');
     return this.http.get(this.baseUrl + 'person/wildcard?searchVal=' + data + '&pageNo=' + page.toString());

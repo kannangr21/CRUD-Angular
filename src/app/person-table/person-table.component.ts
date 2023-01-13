@@ -67,6 +67,14 @@ export class PersonTableComponent {
     })
   }
 
+  personEditData:any = this.personModel;
+  isEditForm:boolean = false;
+
+  openEditModal(modal: any, personData:any): void {
+    this.isEditForm = true;
+    this.personEditData = personData;
+    this.modalService.open(modal);
+  }
 
   submitPersonDetails(data: any) {
     this.personData.addPerson(data).subscribe((data) => {

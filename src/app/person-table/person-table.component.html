@@ -1,12 +1,9 @@
 <div class="row">
     <form #searchForm="ngForm" class="d-flex col-lg-3">
-        <input #wildSearch="ngModel" required ngModel class="form-control" name="search" type="search" placeholder="Search"
-            aria-label="Search">
-            <button *ngIf="wildSearch.valid && canApply()" matTooltip="Search records" class="mx-2 btn btn-outline-success" (click)="callWildCard(searchForm.value)"
-                type="submit"><mat-icon>search</mat-icon></button>
-            <!-- <button class="mx-2 btn btn-outline-dark" (click)="refreshPage(searchForm);" type="submit">Clear
-            </button> -->
-        
+        <input #wildSearch="ngModel" required ngModel class="form-control" name="search" type="search"
+            placeholder="Search" aria-label="Search">
+        <button *ngIf="wildSearch.valid && canApply()" matTooltip="Search records" class="mx-2 btn btn-outline-success"
+            (click)="callWildCard(searchForm.value)" type="submit"><mat-icon>search</mat-icon></button>
     </form>
     <form #exactForm="ngForm" class="d-flex col-lg-4 col-md-8 col-sm-8 col-8">
         <div class="d-flex px-1">
@@ -17,13 +14,8 @@
             <input ngModel #esCity class="form-control me-2" name="citysearch" type="search" placeholder="City"
                 aria-label="Search">
         </div>
-        <button *ngIf="canApply()" matTooltip="Filter Record" class="btn btn-outline-primary" (click)="callExactSearch(exactForm.value)"
-                type="submit"><mat-icon>filter_list</mat-icon></button>
-        <!-- <div class="d-flex m-2 justify-content-center">
-            <button class="btn btn-outline-primary" (click)="searchPersonDetails(exactForm.value)"
-                type="submit">Filter</button>
-            <button class="btn btn-outline-dark mx-1" (click)="refreshPage(exactForm);" type="submit">Clear</button>
-        </div> -->
+        <button *ngIf="canApply()" matTooltip="Filter Record" class="btn btn-outline-primary"
+            (click)="callExactSearch(exactForm.value)" type="submit"><mat-icon>filter_list</mat-icon></button>
     </form>
     <form #sortForm="ngForm" class="d-flex col-lg-4 col-md-8 col-sm-8 col-8">
         <div class="d-flex px-1">
@@ -31,23 +23,22 @@
                 <option value="" disabled selected>Sort field</option>
                 <option *ngFor="let field of personModel | keyvalue">{{ field.key }}</option>
             </select>
-            <select class="form-select mx-1" #sortOrder="ngModel" ngModel name="sortOrder" required aria-placeholder="Sort order" id="">
-                <option value=""   disabled selected>Sort order</option>
+            <select class="form-select mx-1" #sortOrder="ngModel" ngModel name="sortOrder" required
+                aria-placeholder="Sort order" id="">
+                <option value="" disabled selected>Sort order</option>
                 <option value="asc">Ascending</option>
                 <option value="desc">Descending</option>
             </select>
         </div>
-        <button *ngIf="canApply()" matTooltip="Sort Records"
-         class="btn btn-outline-secondary" (click)="sort(sortForm.value)" type="submit"><mat-icon [ngStyle]="{'color':'#93952c'}">sort</mat-icon></button>
-        <!-- <div class="d-flex m-2 justify-content-center">
-            <button class="btn btn-outline-primary" (click)="sort(sortForm.value)" type="submit">Filter</button>
-            <button class="btn btn-outline-dark mx-1" (click)="refreshPage(sortForm);" type="submit">Clear</button>
-        </div> -->
+        <button *ngIf="canApply()" matTooltip="Sort Records" class="btn btn-outline-secondary"
+            (click)="sort(sortForm.value)" type="submit"><mat-icon
+                [ngStyle]="{'color':'#93952c'}">sort</mat-icon></button>
     </form>
     <div class="d-flex col-lg-1 col-md-8 col-sm-8 col-8">
-    <button matTooltip="Clear Filters" class="btn btn-outline-danger" (click)="refreshPage([searchForm, exactForm, sortForm])" type="submit"><mat-icon>clear</mat-icon></button>
-</div>
-<span class="validator text-center" *ngIf="!canApply()">Clear existing filter to apply other filters</span>
+        <button matTooltip="Clear Filters" class="btn btn-outline-danger"
+            (click)="refreshPage([searchForm, exactForm, sortForm])" type="submit"><mat-icon>clear</mat-icon></button>
+    </div>
+    <span class="validator text-center" *ngIf="!canApply()">Clear existing filter to apply other filters</span>
 </div>
 
 <br>
@@ -57,11 +48,7 @@
 <table *ngIf="persons.records.length > 0" class="pt-2 table align-middle bg-white">
     <thead class="bg-light">
         <tr>
-            <th>#</th>
-            <!-- <th>First Name<button(sort)="sortPersons('FirstName')" > <select name="sort" id="">
-                <option value="">Ascending</option>
-                <option value="">Descending</option>
-            </select> </button></th> -->
+            <th>ID</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Address 1</th>
@@ -73,7 +60,7 @@
             <th>Actions</th>
         </tr>
     </thead>
-    
+
     <tbody *ngFor="let person of persons.records | paginate
     : {
         itemsPerPage: tableSize,
@@ -114,7 +101,7 @@ let i = index">
             </td>
             <td>{{ person.PhoneNumber }}</td>
             <td>
-                <button type="button" class="btn btn-link btn-sm btn-rounded">
+                <button type="button" (click)="openEditModal(editForm, person);" class="btn btn-link btn-sm btn-rounded">
                     <mat-icon [ngStyle]="{'color':'gray'}">edit</mat-icon>
                 </button>
                 <button type="button" (click)="open(confirm, person.PhoneNumber);"
@@ -127,11 +114,14 @@ let i = index">
     </tbody>
 
 </table>
-<div class="d-flex justify-content-center">
+<div *ngIf="persons.records.length > 0" class="d-flex justify-content-center">
     <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
     </pagination-controls>
 </div>
 
+<ng-template #editForm let-editModal>
+    <app-input-form [modal]="editModal" [personEditData]="personEditData" [isEditForm]="isEditForm"></app-input-form>
+</ng-template>
 
 <ng-template #confirm let-c="close" let-d="dismiss">
 
