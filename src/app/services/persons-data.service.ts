@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-// import { PersonTableComponent } from '../person-table/person-table.component'
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class PersonsDataService {
-  baseUrl = "http://localhost:8000/";
-  constructor(private http:HttpClient){}//, private table: PersonTableComponent) { }
+
+  baseUrl:string = "http://localhost:8000/";
+
+  constructor(private http:HttpClient){ }
+
   persons(page: number){
     return this.http.get(this.baseUrl + 'person?page=' + page.toString());
   }

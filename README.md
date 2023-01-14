@@ -1,26 +1,29 @@
-# FirstApplication
+# Person CRUD Application Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.4.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.4. This codebase was created to demonstrate a fully fledged application built with Angular that interacts with an actual backend server including CRUD operations, pagination, and more.
+
+## Getting Started
+
+Make sure you have the [Angular CLI](https://github.com/angular/angular-cli#installation) installed globally. We use `npm` for managing the dependancies. Run `npm i` to install all the dependancies.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files. The Backend server source code has been attached [here](https://github.com/kannangr21/CRUD-NodeJS-MySQL).
 
-## Code scaffolding
+## Functionality overview
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The example application is a simple CRUD application where we can add, retrieve, update, and delete a record. It uses a custom API for all requests, including pagination, sorting, and more.
 
-## Build
+## Screenshots
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Landing Page  
+  
+![Landing Page](https://i.ibb.co/xjhqgcb/Screenshot-2023-01-14-at-12-24-39-PM.png)  
 
-## Running unit tests
+Add a Person  
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+![Person Form](https://i.ibb.co/Rv13Hsf/Screenshot-2023-01-14-at-12-21-51-PM.png)
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
 ## Further help
 

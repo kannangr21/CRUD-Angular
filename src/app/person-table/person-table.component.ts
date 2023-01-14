@@ -14,9 +14,6 @@ import { NgForm } from '@angular/forms';
 
 export class PersonTableComponent {
 
-  page: number = 1;
-  tableSize: number = 5;
-
   personModel: {
     PersonID: number,
     FirstName: string,
@@ -39,11 +36,23 @@ export class PersonTableComponent {
       PhoneNumber: 0
     };
 
+  page: number = 1;
+  tableSize: number = 5;
+
+  persons: any;
+
   ngOnInit(): void {
     this.getPersons();
   }
 
+  constructor(private modalService: NgbModal, private personData: PersonsDataService, private apiCalls: ApiCallsService) {
+    apiCalls.refreshEvent().subscribe((data) => {
+      this.getPersons();
+    })
+  }
+
   onTableDataChange(event: any) {
+
     this.page = event;
 
     if (this.isSorted) 
@@ -59,14 +68,6 @@ export class PersonTableComponent {
       this.getPersons();
   }
 
-  persons: any;
-
-  constructor(private modalService: NgbModal, private personData: PersonsDataService, private apiCalls: ApiCallsService) {
-    apiCalls.refreshEvent().subscribe((data) => {
-      this.getPersons();
-    })
-  }
-
   personEditData:any = this.personModel;
   isEditForm:boolean = false;
 
@@ -74,18 +75,6 @@ export class PersonTableComponent {
     this.isEditForm = true;
     this.personEditData = personData;
     this.modalService.open(modal);
-  }
-
-  submitPersonDetails(data: any) {
-    this.personData.addPerson(data).subscribe((data) => {
-      this.ngOnInit();
-    });
-  }
-
-  getPersons() {
-    this.personData.persons(this.page).subscribe((data) => {
-      this.persons = data;
-    });
   }
 
   isExactSearch: boolean = false;
@@ -119,23 +108,6 @@ export class PersonTableComponent {
     });
   }
 
-  closeResult: string = '';
-
-  open(confirm: any, phone: number) {
-    this.modalService.open(confirm).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-      if (result === 'yes') {
-        this.deletePerson(phone);
-      }
-    });
-  }
-
-  deletePerson(phone: number) {
-    this.personData.deletePerson(phone).subscribe((data) => {
-      this.ngOnInit();
-    })
-  }
-
   isSorted: boolean = false;
   sortField: string = '';
   sortOrder: string = '';
@@ -154,6 +126,29 @@ export class PersonTableComponent {
     });
   }
 
+  closeResult: string = '';
+
+  openDeleteModal(confirm: any, phone: number) {
+    this.modalService.open(confirm).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+      if (result === 'yes') {
+        this.deletePerson(phone);
+      }
+    });
+  }
+
+  deletePerson(phone: number) {
+    this.personData.deletePerson(phone).subscribe((data) => {
+      this.ngOnInit();
+    })
+  }
+
+  getPersons() {
+    this.personData.persons(this.page).subscribe((data) => {
+      this.persons = data;
+    });
+  }
+
   refreshPage(searchForm: NgForm[]) {
     this.isExactSearch = false;
     this.isWildCard = false;
@@ -162,15 +157,14 @@ export class PersonTableComponent {
 
     searchForm.forEach((form) => {
       form.resetForm({fieldName: '', sortOrder: ''});
-    })
+    });
+
     this.ngOnInit();
   }
 
   canApply(){
     return !this.isExactSearch && !this.isSorted && !this.isWildCard;
   }
-
-
 }
 
 
