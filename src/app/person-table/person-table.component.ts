@@ -128,11 +128,13 @@ export class PersonTableComponent {
 
   closeResult: string = '';
 
-  openDeleteModal(confirm: any, phone: number) {
+  personToBeDeleted: string;
+  openDeleteModal(confirm: any, person: any) {
+    this.personToBeDeleted = person.FirstName;
     this.modalService.open(confirm).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       if (result === 'yes') {
-        this.deletePerson(phone);
+        this.deletePerson(person.PhoneNumber);
       }
     });
   }

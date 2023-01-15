@@ -104,7 +104,7 @@ let i = index">
                 <button type="button" (click)="openEditModal(editForm, person);" class="btn btn-link btn-sm btn-rounded">
                     <mat-icon [ngStyle]="{'color':'gray'}">edit</mat-icon>
                 </button>
-                <button type="button" (click)="openDeleteModal(confirm, person.PhoneNumber);"
+                <button type="button" (click)="openDeleteModal(confirm, person);"
                     class="btn btn-link btn-sm btn-rounded">
                     <mat-icon [ngStyle]="{'color':'red'}">delete</mat-icon>
                 </button>
@@ -125,13 +125,13 @@ let i = index">
 
 <ng-template #confirm let-c="close" let-d="dismiss">
 
-    <div class="modal-dialog" role="document">
+    <div  role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Confirmation</h4>
+                <h4 class="modal-title">Are you sure want to delete the record?</h4>
             </div>
             <div class="modal-body">
-                <p>Are you sure want to delete the record?</p>
+                <p> {{ personToBeDeleted }} will be removed from the table. </p>
 
             </div>
             <div class="modal-footer">
